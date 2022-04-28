@@ -1,60 +1,47 @@
 #include <stdio.h>
+#include <math.h>
 
-int pow1(int a, int b)
+int sol(int N, int r, int c)
 {
-    int c=1;
-    while(b--)
-    {
-        c = c*a;
+    int z=0, threshold_x, threshold_y;
+    threshold_x = threshold_y = pow(2, N-1);
+    
+    while(N--)
+    {   
+        if(r<threshold_x && c<threshold_y)
+        {
+            threshold_x -= pow(2, N-1);
+            threshold_y -= pow(2, N-1);
+        }
+        else if(r<threshold_x && threshold_y<=c)
+        {
+            threshold_x -= pow(2, N-1);
+            threshold_y += pow(2, N-1);
+            z += pow(4, N)*1;
+        }
+        else if(threshold_x<=r && c<threshold_y)
+        {
+            threshold_x += pow(2, N-1);
+            threshold_y -= pow(2, N-1);
+            z += pow(4, N)*2;
+        }
+        else
+        {
+            threshold_x += pow(2, N-1);
+            threshold_y += pow(2, N-1);
+            z += pow(4, N)*3;
+        }
     }
-    return c;
+    return z;
 }
-
 
 int main()
 {
-    int N, r, c;
-    int i, j, x, y;
-    int Z;
-
+    int N, r, c, Z;
     scanf("%d %d %d", &N, &r, &c);
 
-    x = pow1(2, N)/2;
-    y = x;
-    Z = 0;
+    Z = sol(N, r, c);
 
-    while(N--)
-    {
-        i = pow1(2, N)/2;
-        j = pow1(4, N);
-
-        if(r < x && c < y)//2사분면
-        {
-            x -= i;
-            y -= i;
-        }
-        else if(r < x && c >= y) //1사분면
-        {
-            x -= i;
-            y += i;
-            Z += j;
-
-        }
-        else if(r >= x && c < y) //3사분면
-        {
-            x += i;
-            y -= i;
-            Z += j*2;
-        }
-        else //4사분면
-        {
-            x -= i;
-            y -= i;
-            Z += j*3;
-        }
-
-    }
     printf("%d\n", Z);
-
     return 0;
 }   
