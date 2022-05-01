@@ -1,25 +1,32 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-char** emptysquare(int size)
+void dfs(char **arr, int N, int x, int y)
 {
-    char** result = (char**)malloc(sizeof(char*) * size);
-    for(int i=0; i<size; i++) result[i] = (char*)calloc(size, sizeof(char));
-    return result;
-}
+    int i, j;
 
-void freesquare(char **arr)
-{
-    int i, c;
-    c = sizeof(arr)/sizeof(char);
-    for(i=0; i<c; i++) free(arr[i]);
-    free(arr);
-}
+    for(i=x+N/3; i<x+2*N/3; i++)
+    {
+        for(j=y+N/3; j<y+2*N/3; j++)
+        {
+            arr[i][j] = ' ';
+        }
+    }
 
-void rec(char **arr, int n)
-{
-    
+    if(N>1)
+    {
+        dfs(arr, N/3, x, y);
+        dfs(arr, N/3, x, y+N/3);
+        dfs(arr, N/3, x, y+2*N/3);
 
+        dfs(arr, N/3, x+N/3, y);
+        dfs(arr, N/3, x+N/3, y+N/3);
+        dfs(arr, N/3, x+N/3, y+2*N/3);
 
+        dfs(arr, N/3, x+2*N/3, y);
+        dfs(arr, N/3, x+2*N/3, y+N/3);
+        dfs(arr, N/3, x+2*N/3, y+2*N/3);   
+    }
 }
 
 int main(void)
@@ -28,74 +35,21 @@ int main(void)
     char **arr;
     scanf("%d", &N);
 
-    arr = emptysquare(N);
+    arr = (char **)calloc(N, sizeof(char *));
+    for(i=0; i<N; i++)
+        arr[i] = (char *)calloc(N, sizeof(char));
 
     for(i=0; i<N; i++)
         for(j=0; j<N; j++)
             arr[i][j] = '*';
 
-    rec(arr, N);
+    dfs(arr, N, 0, 0);
 
     for(i=0; i<N; i++)
-    {
-        for(j=0; j<N; j++)
-        {
-            printf("%c",arr[i][j]);
-        }
-        printf("\n");
-    }
-    freesquare(arr);
+        printf("%s\n", arr[i]);
 
+    for(i=0; i<N; i++)
+        free(arr[i]);
+    free(arr);
     return 0;
 }
-
-
-/*
-
-1 = 3
-***
-* *
-***
-
-2 = 9
-*********
-* ** ** *
-*********
-***   ***
-* *   * *
-*********
-*********
-* ** ** *
-*********
-
-3 = 27
-***************************
-* ** ** ** ** ** ** ** ** *
-***************************
-***   ******   ******   ***
-* *   * ** *   * ** *   * *
-***************************
-***************************
-* ** ** ** ** ** ** ** ** *
-***************************
-*********         *********
-* ** ** *         * ** ** *
-*********         *********
-***   ***         ***   ***
-* *   * *         * *   * *
-*********         *********
-*********         *********
-* ** ** *         * ** ** *
-*********         *********
-***************************
-* ** ** ** ** ** ** ** ** *
-***************************
-***   ******   ******   ***
-* *   * ** *   * ** *   * *
-***************************
-***************************
-* ** ** ** ** ** ** ** ** *
-***************************
-
-
-*/
