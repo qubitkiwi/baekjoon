@@ -2,52 +2,68 @@
 
 int map[50][50] = {0,};
 int V[50][50] = {0, };
-int queue[50*50];
+int queue[50*50*2];
 
 
-void bfs(int x, int y, int N, int M)
+int bfs(int N, int M)
 {
-    int max=50*50, num, f, r;
-    int i, j, mx, my, tx, ty;
+    int max=50*50*2, num, f, r;
+    int i, j, k, x, y, mx, my, cnt=0, chek;
     int move[2][4] = {{1, -1, 0, 0},
                       {0, 0, 1, -1}};
 
-    num = f = r = 0;
 
-    queue[r++] = x;
-    queue[r++] = y;
-
-    r%=max;
-    num += 2;
-
-    while(num)
+    while(1)
     {
-        tx = queue[f++];
-        ty = queue[f++];
-
-        V[tx][ty] = 1;
-
-        f%=max;
-        num -= 2;
-
-        for(i=0; i<4; i++)
+        chek=i=j=f=r= 0;
+        for(; i<N; i++)
         {
-            mx = tx + move[0][i];
-            my = ty + move[1][i];
-
-            if(0<=mx && mx<N && 0<=my && my<M)
+            for(; j<M; j++)
             {
-                if(map[mx][my]==1 && V[mx][my]==0)
+                if(map[i][j] == 1 && V[i][j] == 0)
                 {
-                    queue[r++] = mx;
-                    queue[r++] = my;
+                    queue[r++] = i;
+                    queue[r++] = j;
+                    V[i][j] = 1;
+                    num = 2;
+                    chek=1;
+                    break;
+                }
+            }
+            if(chek==1) break;
+            j=0;
+        }
 
-                    r%=max;
-                    num += 2;
+        if(chek==0) break;
+        cnt++;
+
+        while(num)
+        {
+            x = queue[f++];
+            y = queue[f++];
+            f%=max;
+            num -= 2;
+
+            for(k=0; k<4; k++)
+            {
+                mx = x + move[0][k];
+                my = y + move[1][k];
+
+                if(0<=mx && mx<N && 0<=my && my<M)
+                {
+                    if(map[mx][my]==1 && V[mx][my]==0)
+                    {
+                        queue[r++] = mx;
+                        queue[r++] = my;
+                        r%=max;
+                        V[mx][my] = 1;
+                        num += 2;
+                    }
                 }
             }
         }
     }
+    return cnt;
 }
 
 
@@ -57,36 +73,26 @@ int main(void)
 
     scanf("%d", &tc);
     while(tc--)
-    {
-        cnt=0;
-        
-        for(i=0; i<50; i++)
+    {   
+        scanf("%d %d %d", &M, &N, &K);
+
+        for(i=0; i<N; i++)
         {
-            for(j=0; j<50; j++)
+            for(j=0; j<M; j++)
             {
                 map[i][j] = 0;
                 V[i][j] = 0;
             }
         }
 
-        scanf("%d %d %d", &N, &M, &K);
         while(K--)
         {
             scanf("%d %d", &i, &j);
-            map[i][j] = 1;
+            map[j][i] = 1;
         }
 
-        for(i=0; i<N; i++)
-        {
-            for(j=0; j<M; j++)
-            {
-                if(map[i][j]==1 && V[i][j]==0)
-                {
-                    cnt++;
-                    bfs(i, j, N, M);
-                }
-            }
-        }
+        cnt = bfs(N, M);
+
         printf("%d\n", cnt);
     }
     return 0;
