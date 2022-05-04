@@ -1,27 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-int map[3][3];
-int visit[3][3]={0,};
-int queue[3*3];
-
-int bfs(int N)
+int bfs(int **map, int **visit, int *queue, int N)
 {
-    int f, r, num, max;
+    int f, r, num, max = N*N*2;
     int x, y, nx, ny, i;
-    int move[2][2] = {{0, 1},{1, 0}};
+    int move[2][2] = {{0, 1},
+                      {1, 0}};
 
-    f=r=num=0;
-    max = 3*3;
+    f=r=0;
 
-    x = 0;
-    y = 0;
-    queue[r++] = x;
-    queue[r++] = y;
-    num += 2;
+    queue[r++] = 0;
+    queue[r++] = 0;
+    num = 2;
 
     while(num)
     {
-        visit[x][y]=1;
         x = queue[f++];
         y = queue[f++];
         f %= max;
@@ -36,8 +30,9 @@ int bfs(int N)
 
             if(0<=nx && nx<N && 0<=ny && ny<N)
             {
-                if(!visit[nx][ny])
+                if(visit[nx][ny] == 0)
                 {
+                    visit[nx][ny]=1;
                     queue[r++] = nx;
                     queue[r++] = ny;
                     r %= max;
@@ -52,25 +47,46 @@ int bfs(int N)
 
 int main(void)
 {
-    int N, i, j;
-
+    int N, i, j, **map, **visit, *queue;
     scanf("%d", &N);
+
+    map = (int **)calloc(N, sizeof(int *));
+    visit = (int **)calloc(N, sizeof(int *));
+    for(i=0; i<N; i++)
+    {
+        map[i] = (int *)calloc(N, sizeof(int));
+        visit[i] = (int *)calloc(N, sizeof(int));
+    }
+    queue = (int *)calloc(N*N*2, sizeof(int));
 
     for(i=0; i<N; i++)
         for(j=0; j<N; j++)
+        {
             scanf("%d", &map[i][j]);
-    
-    if(bfs(N))
+            visit[i][j] = 0;
+        }
+            
+    i = bfs(map, visit, queue, N);
+
+    if(i)
         printf("HaruHaru\n");
     else
         printf("Hing\n");
 
+    // for(i=0; i<N; i++)
+    // {
+    //     for(j=0; j<N; j++) 
+    //         printf("%d ", visit[i][j]);
+    //     printf("\n");
+    // }
+
     for(i=0; i<N; i++)
     {
-        for(j=0; j<N; j++) 
-            printf("%d ", visit[i][j]);
-        printf("\n");
+        free(visit[i]);
+        free(map[i]);
     }
-
+    free(map);
+    free(visit);
+    free(queue);
     return 0;
 }
