@@ -1,40 +1,40 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(void)
 {
-    int N, K, i, j, idx;
-    int arr[1000];
-    int num;
-
+    int N, K, *arr;
+    int num, i, idx;
     scanf("%d %d", &N, &K);
+
+    arr = (int *)calloc(N, sizeof(int));
     num = N;
+    idx = N-1;
 
     for(i=0; i<N; i++)
         arr[i] = i+1;
 
-
-    idx = N;
     printf("<");
 
-    while(num)
+    while(num--)
     {
-        for(j=0; j<K; )
+        for(i=0; i<K; )
         {
-            idx++;
-            idx %= N+1;
-            if(arr[idx]) j++;
+            idx = (idx+1)%N;
+            if(arr[idx])
+                i++;
         }
 
-        if(num!=1)
+        if(num)
             printf("%d, ", arr[idx]);
         else
             printf("%d", arr[idx]);
 
         arr[idx] = 0;
-        num--;        
     }
     printf(">\n");
 
+    free(arr);
     return 0;
 }
 
