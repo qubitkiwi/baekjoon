@@ -3,25 +3,19 @@
 
 int main(void)
 {
-    char s[101], buffer[100] = {0,};
-    int i, n, bp, chek, end=1;
+    char s[102], buffer[100];
+    int i, len, bp=0, chek;
 
     while(1)
     {
-        if(end == 1)
-            bp = chek =0;
+        fgets(s, 102, stdin);
+        len = strlen(s);
+        bp=chek=0;
 
-        fgets(s, 101, stdin);
-        n = strlen(s);
-        end = s[n-2] == '.';
-
-        
-        if(n==2 && s[0] == '.' && end == 0)
+        if(!strcmp(s, ".\n"))
             break;
 
-        
-
-        for(i=0; s[i] != '.' && i<n-1 ; i++)
+        for(i=0; i<len; i++)
         {
             if(s[i] == '(' || s[i] == '[')
             {
@@ -55,13 +49,9 @@ int main(void)
 
 
         if(chek == 1 || bp != 0)
-        {
             printf("no\n");
-        }
         else
-        {
             printf("yes\n");
-        }
 
     }
     return 0;
