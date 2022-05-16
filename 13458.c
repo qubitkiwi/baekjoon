@@ -13,7 +13,6 @@ int main()
         scanf("%d", &A[i]);
     scanf("%d %d", &B, &C);
 
-    // people = N;
 
     for(i=0; i<N; i++)
     {
